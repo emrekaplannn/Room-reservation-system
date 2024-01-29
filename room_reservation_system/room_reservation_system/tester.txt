@@ -1,0 +1,21 @@
+source ../tutorial-env/bin/activate
+python3 sck_server.py
+python3 manage.py runserver
+user1 password1
+http://127.0.0.1:8000/signin/ or http://127.0.0.1:8000/signup/
+http://127.0.0.1:8000/notifications/
+LIST ORGANIZATION organization3 > this wont reply anything as we are already showing this in general
+LIST ROOM r1
+ADD ORGANIZATION organization3 r15 3 3 333 03:30 23:30
+ACCESS ORGANIZATION organization3 > this wont reply anything as we are already showing this in general
+DELETE ORGANIZATION organization3 room3
+READ EVENT e2
+PERRESERVE ROOM organization3 r11 e2 10:30 16:30
+READ EVENT e2
+READ EVENT e3
+UPDATE EVENT e3 e3 deneme e37category 100 120
+READ EVENT e3
+RESERVE ROOM organization3 r1 e2 09:30
+DELETE ROOM r1
+RESERVE ROOM organization3 r1 e2 09:30
+DELETE EVENT e2 r1

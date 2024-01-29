@@ -1,0 +1,106 @@
+<!-- notification.html -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Notification Page</title>
+    <style>
+      #rooms,
+      #events {
+        margin-bottom: 20px; /* Adjust as needed */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Notification Page</h1>
+
+    <div id="loginMessage" style="display: none">Please log in</div>
+
+    <div id="notificationPage" style="display: none">
+      <form id="messageForm">
+        <input type="text" id="messageInput" placeholder="Type a message" />
+        <input type="submit" value="Send" />
+      </form>
+
+      <div id="reply"></div>
+      <div id="rooms"></div>
+      <div id="events"></div>
+    </div>
+
+    <script>
+      var token = localStorage.getItem("token");
+      var username = localStorage.getItem("username");
+      if (token) {
+        document.getElementById("notificationPage").style.display = "block";
+        var socket = new WebSocket("ws://localhost:12345/");
+        socket.onopen = function () {
+          // send token and username to server as JSON
+          socket.send(
+            JSON.stringify({
+              token: token,
+              username: username,
+            })
+          );
+
+          // send message to server as JSON
+          socket.send(
+            JSON.stringify({
+              message: "ACCESS ORGANIZATION organization3",
+            })
+          );
+        };
+
+        socket.onmessage = function (e) {
+          var data = JSON.parse(e.data);
+          console.log(data);
+
+          if (data.reply) {
+            var replyDiv = document.querySelector("#reply");
+            replyDiv.textContent =
+              "Reply: " + JSON.stringify(data.reply, null, 2);
+          }
+
+          if (data.notification) {
+            alert(
+              "Notification: " + JSON.stringify(data.notification, null, 2)
+            );
+          }
+
+          if (data.general) {
+            var rooms = data.general.filter(function (item) {
+              return "name" in item;
+            });
+
+            var events = data.general.filter(function (item) {
+              return "title" in item;
+            });
+
+            var roomsDiv = document.querySelector("#rooms");
+            roomsDiv.textContent = "Rooms: " + JSON.stringify(rooms, null, 2);
+
+            var eventsDiv = document.querySelector("#events");
+            eventsDiv.textContent =
+              "Events: " + JSON.stringify(events, null, 2);
+          }
+        };
+
+        document
+          .querySelector("#messageForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+            var messageInput = document.querySelector("#messageInput");
+            var message = messageInput.value;
+            // send token and message to server as JSON
+            socket.send(
+              JSON.stringify({
+                message: message,
+              })
+            );
+            messageInput.value = "";
+          });
+      } else {
+        document.getElementById("loginMessage").style.display = "block";
+      }
+    </script>
+  </body>
+</html>

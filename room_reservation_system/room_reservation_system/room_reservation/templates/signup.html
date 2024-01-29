@@ -1,0 +1,53 @@
+<!-- authentication.html -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Register Page</title>
+  </head>
+  <body>
+    <h1>Register Page</h1>
+
+    <form id="loginForm">
+      <input type="text" id="usernameInput" placeholder="Username" />
+      <input type="password" id="passwordInput" placeholder="Password" />
+      <input type="submit" value="Sign Up" />
+    </form>
+
+    <div id="serverMessage"></div>
+
+    <script>
+      var socket = new WebSocket("ws://localhost:12345/");
+
+      socket.onmessage = function (e) {
+        var data = JSON.parse(e.data);
+        console.log(data);
+        var serverMessage = document.querySelector("#serverMessage");
+        serverMessage.textContent =
+          "Token: " + JSON.stringify(data.token, null, 2);
+
+        // Store the token in local storage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("username", data.username);
+      };
+
+      document
+        .querySelector("#loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          var usernameInput = document.querySelector("#usernameInput");
+          var passwordInput = document.querySelector("#passwordInput");
+          var username = usernameInput.value;
+          var password = passwordInput.value;
+
+          var authData = {
+            username: username,
+            password: password,
+            type: "register",
+          };
+
+          socket.send(JSON.stringify(authData));
+        });
+    </script>
+  </body>
+</html>
