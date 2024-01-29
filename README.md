@@ -1,2 +1,3 @@
 # Room-reservation-system
 A Room Reservation System for Events and Seminars
+Large organizations like universities have many rooms available for seminars, lectures, and other events. Event and room management is a difficult task without a central reservation management system. In this project, users with different roles can query and reserve rooms for their events. Rooms will be defined with their capacity, location, and the type of users that can reserve them. Users with sufficient privileges can reserve a room for a period of time for an event or lecture. Some reservations can also be periodic. All users can query events based on category, location, capacity, and time. As new reservations are added to the system, interested users will be notified.
